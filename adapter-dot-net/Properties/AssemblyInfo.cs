@@ -4,8 +4,9 @@ using System.Runtime.InteropServices;
 
 
 // Version information for this assembly:
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
+// 1.0.1.0      fix shutdown exception in MultiClientStreamPort.Stop
 // 1.0.0.0      first version
 
 // General Information about an assembly is controlled through the following 

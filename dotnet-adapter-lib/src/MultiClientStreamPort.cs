@@ -263,7 +263,14 @@ namespace MTConnect
             }
             if (mActiveClients.CurrentCount > 0)
             {
-                mActiveClients.Signal();
+                try
+                {
+                    mActiveClients.Signal();
+                }
+                catch (InvalidOperationException)
+                {
+                    // ignore
+                }
             }
             while (mActiveClients.CurrentCount > 0)
             {
