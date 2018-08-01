@@ -38,6 +38,8 @@ namespace ExampleAdapter
         /// </summary>
         private MTConnect.Adapter adapter;
 
+        private Random random = new Random();
+
         /// <summary>
         /// Construct a Service object
         /// </summary>
@@ -145,6 +147,11 @@ namespace ExampleAdapter
         private Event mServoBlock = new Event("block");
         private Event mProgram = new Event("program");
 
+        private Event mCoolantLevel = new Event("coolant");
+        private double coolantLevel = 6;
+        private Event mTemp = new Event("temp");
+        private int temperature = 20;
+
         /// <summary>
         /// thread to scan machine state and send SHDR updates
         /// </summary>
@@ -172,6 +179,9 @@ namespace ExampleAdapter
                 adapter.AddDataItem(mServoBlock);
                 adapter.AddDataItem(mProgram);
                 adapter.AddDataItem(mSystem);
+
+                adapter.AddDataItem(mCoolantLevel);
+                adapter.AddDataItem(mTemp);
 
                 mAdapterInfo.Value = ServiceName;
 
@@ -217,7 +227,23 @@ namespace ExampleAdapter
         private void ScanMachineState()
         {
             mExecution.Value = "ACTIVE";
+            // make up a constantly changing value for the 'block' event
+            // on a CNC machine this would be the current block (line of G-code)
             mServoBlock.Value = DateTime.Now.Second.ToString();
+            // simulate varying load and temp
+            coolantLevel = coolantLevel * 0.90 + random.NextDouble();
+            mCoolantLevel.Value = coolantLevel.ToString("F1");
+            temperature = (temperature * 5 + random.Next(44)) / 6;
+            mTemp.Value = temperature;
+            // turn some alarms on and off
+            if (coolantLevel < 5)
+            {
+                mSystem.Add(Condition.Level.WARNING, "coolant press. low", "CP001");
+            }
+            if (temperature > 22)
+            {
+                mSystem.Add(Condition.Level.WARNING, "overtemp warning", "OT77");
+            }
         }
     }
 }
